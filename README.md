@@ -27,4 +27,3 @@ Bayesowski:
         end
       end
     end
-    end
