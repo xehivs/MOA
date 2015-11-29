@@ -15,9 +15,9 @@ Bayesowski:
 ###Algorytm
 
     while data stream exists
-      set budget
       collect data in data chunk
       randomize chunk
+      set budget
       for each object in chunk
         classify(object)
         if budget > 0 && support < treshold
