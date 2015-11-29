@@ -24,6 +24,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import moa.classifiers.Classifier;
 import moa.core.Example;
 import moa.core.Measurement;
@@ -74,15 +77,15 @@ public class EvaluatePrequentialActive extends MainTask
         LearningPerformanceEvaluator.class,
         "WindowClassificationPerformanceEvaluator");
 
-    public IntOption instanceLimitOption = new IntOption("instanceLimit", 'i',
-        "Maximum number of instances to test/train on  (-1 = no limit).",
-        100000000, -1, Integer.MAX_VALUE);
+    public IntOption chunkLimitOption = new IntOption("chunkLimit", 'i',
+        "Maximum number of chunks to test/train on  (-1 = no limit).",
+        1000000, -1, Integer.MAX_VALUE);
 
     public FloatOption budgetOption = new FloatOption("budget", 'b',
         "Budget.", .1, 0, 1);
 
     public FloatOption thresholdOption = new FloatOption("threshold", 'r',
-        "Treshold.", .1, 0, 1);
+        "Treshold.", .75, 0, 1);
 
     public IntOption chunkSizeOption = new IntOption(
         "chunkSize", 'c',
@@ -93,14 +96,14 @@ public class EvaluatePrequentialActive extends MainTask
         "Maximum number of seconds to test/train for (-1 = no limit).", -1,
         -1, Integer.MAX_VALUE);
 
-    public IntOption sampleFrequencyOption = new IntOption("sampleFrequency",
+    public IntOption chunkFrequencyOption = new IntOption("chunkFrequency",
         'f',
-        "How many instances between samples of the learning performance.",
-        100000, 0, Integer.MAX_VALUE);
+        "How many chunks between samples of the learning performance.",
+        10, 0, Integer.MAX_VALUE);
 
     public IntOption memCheckFrequencyOption = new IntOption(
         "memCheckFrequency", 'q',
-        "How many instances between memory bound checks.", 100000, 0,
+        "How many chunks between memory bound checks.", 100000, 0,
         Integer.MAX_VALUE);
 
     public FileOption dumpFileOption = new FileOption("dumpFile", 'd',
@@ -125,7 +128,6 @@ public class EvaluatePrequentialActive extends MainTask
     @Override
     protected Object doMainTask(TaskMonitor monitor, ObjectRepository repository) 
     {
-        System.out.println("Będę żył");
 
         // Przypisujemy klasyfikator, generator strumienia i ewaluator
         Learner learner = (Learner) getPreparedClassOption(this.learnerOption);
@@ -138,15 +140,14 @@ public class EvaluatePrequentialActive extends MainTask
             "learning evaluation instances");
 
         // Określanie parametrów
-        int maxInstances = this.instanceLimitOption.getValue();
+        int maxChunks = this.chunkLimitOption.getValue();
         int maxSeconds = this.timeLimitOption.getValue();
         int chunkSize = this.chunkSizeOption.getValue();
         int budget = (int) (chunkSize * this.budgetOption.getValue());
-        double threshold = this.thresholdOption.getValue();
+        double threshold = this.thresholdOption.getValue() * 100;
         
-        long instancesProcessed = 0;
+        long chunksProcessed = 0;
         int secondsElapsed = 0;
-        int budgetSpent = 0;
         
         File dumpFile = this.dumpFileOption.getFile();
         PrintStream immediateResultStream = null;
@@ -191,47 +192,42 @@ public class EvaluatePrequentialActive extends MainTask
 
         // Tu startujemy
         monitor.setCurrentActivity("Processing...", -1.0);
-        /*
-            while data stream exists
-                collect data in data chunk
-                randomize chunk
-                set budget
-                for each object in chunk
-                    classify(object)
-                    if budget > 0 && support < treshold
-                        ask for label
-                        retrain classifier
-                        budget--
-                    end
-                end
-            end
-        */
+    
         while (stream.hasMoreInstances()
-            && ((maxInstances < 0) || (instancesProcessed < maxInstances))
-            && ((maxSeconds < 0) || (secondsElapsed < maxSeconds))) 
-        {
-            Example trainInst = stream.nextInstance();
-            Example testInst = (Example) trainInst; //.copy();
-            //testInst.setClassMissing();
+            && ((maxChunks < 0) || (chunksProcessed < maxChunks))
+            && ((maxSeconds < 0) || (secondsElapsed < maxSeconds))) {
 
-            //System.out.println("Sample A: " + trainInst.getData());
-            //System.out.println("Sample B: " + testInst.getData());
+            ArrayList instances = new ArrayList();      // collect data in data chunk
+            for(int i = 0 ; i < chunkSize ; i++)
+                instances.add(stream.nextInstance());
 
-            double[] prediction = learner.getVotesForInstance(testInst);
-            // Output prediction
-            if (outputPredictionFile != null) {
-                int trueClass = (int) ((Instance) trainInst.getData()).classValue();
-                outputPredictionResultStream.println(Utils.maxIndex(prediction) + "," + trueClass);
+            Collections.shuffle(instances);             // randomize chunk
+            int budgetSpent = 0;                        // reset budget
+            
+            for (int i = 0; i < instances.size(); i++)  // for each instance in chunk
+            {
+                Example instance = (Example) instances.get(i);
+                double[] prediction = learner.getVotesForInstance(instance);
+                evaluator.addResult(instance, prediction);
+                
+                double support = ( (Measurement) evaluator.getPerformanceMeasurements()[1]).getValue();
+                if (budgetSpent < budget && support < threshold) 
+                {
+                    learner.trainOnInstance(instance);
+                    budgetSpent ++;
+                }
+
+                // Output prediction
+                if (outputPredictionFile != null) 
+                {
+                    int trueClass = (int) ((Instance) instance.getData()).classValue();
+                    outputPredictionResultStream.println(Utils.maxIndex(prediction) + "," + trueClass);
+                }
             }
 
-            //evaluator.addClassificationAttempt(trueClass, prediction, testInst.weight());
-            evaluator.addResult(testInst, prediction);
-            learner.trainOnInstance(trainInst);
-            instancesProcessed++;
+            chunksProcessed ++;
 
-            //System.out.println("Measurements: " + evaluator.getPerformanceMeasurements());
-
-            if (instancesProcessed % this.sampleFrequencyOption.getValue() == 0
+            if (chunksProcessed % this.chunkFrequencyOption.getValue() == 0
                 || stream.hasMoreInstances() == false) 
             {
                 long evaluateTime = TimingUtils.getNanoCPUTimeOfCurrentThread();
@@ -245,7 +241,7 @@ public class EvaluatePrequentialActive extends MainTask
                     new Measurement[]{
                         new Measurement(
                             "learning evaluation instances",
-                            instancesProcessed),
+                            chunksProcessed),
                         new Measurement(
                             "evaluation time ("
                                 + (preciseCPUTiming ? "cpu "
@@ -266,21 +262,21 @@ public class EvaluatePrequentialActive extends MainTask
                     immediateResultStream.flush();
                 }
             }
-            if (instancesProcessed % INSTANCES_BETWEEN_MONITOR_UPDATES == 0) {
+            if (chunksProcessed % INSTANCES_BETWEEN_MONITOR_UPDATES == 0) {
                 if (monitor.taskShouldAbort()) {
                     return null;
                 }
                 long estimatedRemainingInstances = stream.estimatedRemainingInstances();
-                if (maxInstances > 0) {
-                    long maxRemaining = maxInstances - instancesProcessed;
+                if (maxChunks > 0) {
+                    long maxRemaining = maxChunks - chunksProcessed;
                     if ((estimatedRemainingInstances < 0)
                         || (maxRemaining < estimatedRemainingInstances)) {
                         estimatedRemainingInstances = maxRemaining;
                 }
             }
             monitor.setCurrentActivityFractionComplete(estimatedRemainingInstances < 0 ? -1.0
-                : (double) instancesProcessed
-                / (double) (instancesProcessed + estimatedRemainingInstances));
+                : (double) chunksProcessed
+                / (double) (chunksProcessed + estimatedRemainingInstances));
             if (monitor.resultPreviewRequested()) {
                 monitor.setLatestResultPreview(learningCurve.copy());
             }
