@@ -8,3 +8,5 @@ install: clean all
 	zip -r moa.jar moa
 test: install
 	java -Xmx4G -cp moa.jar -javaagent:sizeofag.jar moa.gui.GUI
+experiments:
+	./experiment.sh
