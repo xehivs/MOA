@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# Skrypt
 require 'colorize'
 
 classifiersSet = [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN" ]
