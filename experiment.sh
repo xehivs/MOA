@@ -8,7 +8,7 @@ chunkSizeSet = [ 10, 1000, 1000 ]
 thresholdSet = [ 0.25, 0.5, 0.75 ]
 budgetSet = [ 0.125, 0.25, 0.5, 0.75 ]
 
-experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * thresholdSet.length * budgetSet.length
+experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
 system("rm results/*")
