@@ -2,7 +2,7 @@
 require 'colorize'
 
 classifiersSet = [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN" ]
-generatorsSet = [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.cd.AbruptChangeGenerator" ]
+generatorsSet = [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.LEDGeneratorDrift" ]
 chunksSet = [ 100, 1000, 10000, 100000 ]
 chunkSizeSet = [ 10, 1000, 1000 ]
 thresholdSet = [ 0.25, 0.5, 0.75 ]
