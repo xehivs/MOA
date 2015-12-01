@@ -3,9 +3,6 @@
 require 'colorize'
 require 'csv'    
 require 'set'
-#require 'chartkick'
-#require 'erb'
-#require 'jquery'
 
 module Enumerable
     def sum
@@ -73,17 +70,6 @@ end
 end
 end
 end
-
-# do wyboru classifier i generator
-# zewnętrzny poziom wykresu chunks od chunk size
-# wewnętrzny poziom wykresu budget od threshold
-# accuracy od budget
-# kolejne linie do treshold
-
-classifier = classifiersSet[0]
-generator = generatorsSet[0]
-chunks = chunksSet[0]
-chunkSize = chunkSizeSet[0]
 
 CSV.open("results.csv", "wb") do |csv|
 	for result in results
