@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title>Test</title>
+    </head>
+    <body>
+    	AAA
+        <%= @name %>
+
+        <%= line_chart filtered_results.map{|result|
+		    {name: result[:threshold], data: result[:meanAccuracy]}
+		}%>
+    </body>
+</html>
