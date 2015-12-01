@@ -40,11 +40,11 @@ header = { :classifier => "classifier", :generator => "generator", :chunks => "c
 
 results.add header
 
-for classifier in classifiersSet
-for generator in generatorsSet
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
 for threshold in thresholdSet
+for classifier in classifiersSet
+for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
 	classifierName = classifier.split('.').last.downcase
