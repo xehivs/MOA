@@ -21,7 +21,7 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
-    if experimentNumber < 936
+    if experimentNumber < 1100
         next
     end
 	classifierName = classifier.split('.').last.downcase
