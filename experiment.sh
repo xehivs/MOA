@@ -12,7 +12,7 @@ budgetSet = [ 0.125, 0.25, 0.5, 0.75 ]
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
-system("rm results/*")
+#system("rm results/*")
 
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
@@ -21,10 +21,13 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
+    if experimentNumber < 936
+        next
+    end
 	classifierName = classifier.split('.').last.downcase
 	generatorName = generator.split('.').last.downcase
 	outputFilename = "#{classifierName}_#{generatorName}_i_#{chunks}_s_#{chunkSize}_t_#{threshold}_b_#{budget}.csv"
-	command = "java -cp moa.jar -javaagent:sizeofag.jar moa.DoTask \"EvaluatePrequentialActive -l #{classifier} -s #{generator} -i #{chunks} -b #{budget} -r #{threshold} -c #{chunkSize}\" > results/#{outputFilename}"
+	command = "java -cp moa.jar -javaagent:sizeofag.jar moa.DoTask \"EvaluatePrequentialActive -l #{classifier} -s #{generator} -i #{chunks} -b #{budget} -r #{threshold} -c #{chunkSize} -t 600\" > results/#{outputFilename}"
 	puts "# [#{experimentNumber}/#{experimentsCount}][#{(100*experimentNumber/experimentsCount).round}%]".red
 	puts "# Testing #{classifierName} on #{generatorName}".yellow
 	puts "# #{chunks} chunks #{chunkSize} instances each, on #{threshold} threshold and #{budget} budget".green
