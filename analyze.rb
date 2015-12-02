@@ -47,11 +47,15 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
+	#if experimentNumber <1250
+	#	next
+	#end
+
 	classifierName = classifier.split('.').last.downcase
 	generatorName = generator.split('.').last.downcase
 
 	outputFilename = "results/#{classifierName}_#{generatorName}_i_#{chunks}_s_#{chunkSize}_t_#{threshold}_b_#{budget}.csv"
-	puts "# [#{experimentNumber}/#{experimentsCount}][#{(100*experimentNumber/experimentsCount).round}%]".red
+
 
 	csv_text = File.read(outputFilename)
 	csv = CSV.parse(csv_text, :headers => true)
@@ -60,6 +64,13 @@ for budget in budgetSet
 	csv.each do |row|
 		accuracy = row[4]
 		accuracies.add(accuracy.to_f)
+	end
+
+
+	if accuracies.length == 0
+		puts "# [#{experimentNumber}/#{experimentsCount}][#{(100*experimentNumber/experimentsCount).round}%]".red
+	else
+		puts "# [#{experimentNumber} good]".green
 	end
 
 	result = { :classifier => classifier, :generator => generator, :chunks => chunks, :chunkSize => chunkSize, :threshold => threshold, :budget => budget, :meanAccuracy => accuracies.mean, :standardDeviation => accuracies.standard_deviation }

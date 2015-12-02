@@ -21,9 +21,6 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
-    if experimentNumber < 1273 || experimentNumber > 1280
-        next
-    end
 	classifierName = classifier.split('.').last.downcase
 	generatorName = generator.split('.').last.downcase
 	outputFilename = "#{classifierName}_#{generatorName}_i_#{chunks}_s_#{chunkSize}_t_#{threshold}_b_#{budget}.csv"
