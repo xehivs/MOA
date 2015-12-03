@@ -3,6 +3,7 @@
 require 'colorize'
 require 'csv'    
 require 'set'
+require 'json'
 
 module Enumerable
     def sum
@@ -34,11 +35,11 @@ budgetSet = [ 0.125, 0.25, 0.5, 0.75 ]
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
-results = Set.new
+results = Array.new
 
 header = { :classifier => "classifier", :generator => "generator", :chunks => "chunks", :chunkSize => "chunkSize", :threshold => "threshold", :budget => "budget", :meanAccuracy => "meanAccuracy", :standardDeviation => "standardDeviation" }
 
-results.add header
+results << header
 
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
@@ -47,9 +48,6 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
-	#if experimentNumber <1250
-	#	next
-	#end
 
 	classifierName = classifier.split('.').last.downcase
 	generatorName = generator.split('.').last.downcase
@@ -74,7 +72,7 @@ for budget in budgetSet
 	end
 
 	result = { :classifier => classifier, :generator => generator, :chunks => chunks, :chunkSize => chunkSize, :threshold => threshold, :budget => budget, :meanAccuracy => accuracies.mean, :standardDeviation => accuracies.standard_deviation }
-	results.add result
+	results << result
 end
 end
 end
@@ -85,5 +83,14 @@ end
 CSV.open("results.csv", "wb") do |csv|
 	for result in results
 		csv << result.values
+		#puts result.to_json
 	end
 end
+
+
+
+File.open('results.json', "wb") { |f| f.write(results.to_json) }
+
+# Wszystko dla każdego z trzech generatorów
+
+# Accuracy dla
