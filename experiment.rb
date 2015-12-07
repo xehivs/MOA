@@ -2,6 +2,7 @@
 # Skrypt
 require 'colorize'
 require 'json'
+require 'open-uri'
 
 config = JSON.parse(File.read('config.json'))
 
@@ -16,6 +17,7 @@ timeCut = config["timeCut"]
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
+startWith = 300
 
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
@@ -24,6 +26,10 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
+	if(experimentNumber < startWith) 
+		next
+	end
+
 	classifierName = classifier.split('.').last.downcase
 	generatorName = generator.split('.').last.downcase
 	outputFilename = "#{classifierName}_#{generatorName}_i_#{chunks}_s_#{chunkSize}_t_#{threshold}_b_#{budget}.csv"
@@ -31,6 +37,10 @@ for budget in budgetSet
 	puts "# [#{experimentNumber}/#{experimentsCount}][#{(100*experimentNumber/experimentsCount).round}%]".red
 	puts "# Testing #{classifierName} on #{generatorName}".yellow
 	puts "# #{chunks} chunks #{chunkSize} instances each, on #{threshold} threshold and #{budget} budget".green
+
+	puts "#{format("%.3f", experimentNumber.to_f / experimentsCount.to_f)}"
+	open("http://156.17.43.89:8888/moaStatus/#{format("%.3f", experimentNumber.to_f / experimentsCount.to_f)}").read
+
 	system(command)
 end
 end
