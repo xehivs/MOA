@@ -1,0 +1,9 @@
+{
+	"classifiersSet" : [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN" ],
+	"generatorsSet" : [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.LEDGeneratorDrift" ],
+	"chunksSet" : [ 10000 ],
+	"chunkSizeSet" : [ 10, 100, 1000, 10000 ],
+	"thresholdSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
+	"budgetSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
+	"timeCut" : 21600
+}

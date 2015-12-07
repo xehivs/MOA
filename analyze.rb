@@ -25,12 +25,15 @@ module Enumerable
     end
 end 
 
-classifiersSet = [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN" ]
-generatorsSet = [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.LEDGeneratorDrift" ]
-chunksSet = [ 100, 1000, 10000, 100000 ]
-chunkSizeSet = [ 10, 100, 1000 ]
-thresholdSet = [ 0.25, 0.5, 0.75 ]
-budgetSet = [ 0.125, 0.25, 0.5, 0.75 ]
+config = JSON.parse(File.read('config.json'))
+
+classifiersSet = config["classifiersSet"]
+generatorsSet = config["generatorsSet"]
+chunksSet = config["chunksSet"]
+chunkSizeSet = config["chunkSizeSet"]
+thresholdSet = config["thresholdSet"]
+budgetSet = config["budgetSet"]
+timeCut = config["timeCut"]
 
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
