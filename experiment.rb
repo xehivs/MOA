@@ -17,7 +17,8 @@ timeCut = config["timeCut"]
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
-startWith = 300
+startsWith = ARGV[0] ? ARGV[0].to_i : 0
+endsWith = ARGV[1] ? ARGV[1].to_i : experimentsCount
 
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
@@ -26,7 +27,7 @@ for classifier in classifiersSet
 for generator in generatorsSet
 for budget in budgetSet
 	experimentNumber += 1
-	if(experimentNumber < startWith) 
+	if(experimentNumber < startsWith || experimentNumber > endsWith) 
 		next
 	end
 
