@@ -17,7 +17,7 @@ timeCut = config["timeCut"]
 experimentsCount = generatorsSet.length * classifiersSet.length * chunksSet.length * chunkSizeSet.length * thresholdSet.length * budgetSet.length
 experimentNumber = 0
 
-startWith = 300
+startWith = 538
 
 for chunks in chunksSet
 for chunkSize in chunkSizeSet
