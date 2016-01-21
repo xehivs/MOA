@@ -1,5 +1,5 @@
 {
-	"classifiersSet" : [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN", "moa.classifiers.rules.ruleClassifier" ],
+	"classifiersSet" : [ "moa.classifiers.functions.Perceptron", "moa.classifiers.bayes.NaiveBayes", "moa.classifiers.lazy.kNN", "moa.classifiers.rules.RuleClassifier" ],
 	"generatorsSet" : [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.LEDGeneratorDrift" ],
 	"chunksSet" : [ 10000 ],
 	"chunkSizeSet" : [ 10, 100, 1000, 10000 ],
