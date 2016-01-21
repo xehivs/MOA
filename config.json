@@ -5,5 +5,5 @@
 	"chunkSizeSet" : [ 10, 100, 1000, 10000 ],
 	"thresholdSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
 	"budgetSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
-	"timeCut" : 1800
+	"timeCut" : 300
 }
