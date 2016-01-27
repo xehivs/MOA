@@ -67,11 +67,13 @@ for budget in budgetSet
 		accuracies.add(accuracy.to_f)
 	end
 
-
+    if experimentNumber % 100 == 0
+        puts "experiment #{experimentNumber}".green
+    end
 	if accuracies.length == 0
 		puts "# [#{experimentNumber}/#{experimentsCount}][#{(100*experimentNumber/experimentsCount).round}%]".red
 	else
-		puts "# [#{experimentNumber} good]".green
+#		puts "# [#{experimentNumber} good]".green
 	end
 
 	result = { :classifier => classifier, :generator => generator, :chunks => chunks, :chunkSize => chunkSize, :threshold => threshold, :budget => budget, :meanAccuracy => accuracies.mean, :standardDeviation => accuracies.standard_deviation }
@@ -92,7 +94,7 @@ end
 
 
 
-File.open('results.json', "wb") { |f| f.write(results.to_json) }
+#File.open('results.json', "wb") { |f| f.write(results.to_json) }
 
 # Wszystko dla każdego z trzech generatorów
 

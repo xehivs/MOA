@@ -3,7 +3,7 @@
 	"generatorsSet" : [ "generators.WaveformGeneratorDrift", "generators.RandomTreeGenerator", "generators.LEDGeneratorDrift" ],
 	"chunksSet" : [ 10000 ],
 	"chunkSizeSet" : [ 10, 100, 1000, 10000 ],
-	"thresholdSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
-	"budgetSet" : [ 0, 0.2, 0.4, 0.6, 0.8, 1 ],
-	"timeCut" : 300
+	"thresholdSet" : [ 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ],
+	"budgetSet" : [ 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ],
+	"timeCut" : 30
 }
