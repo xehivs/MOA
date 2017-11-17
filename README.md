@@ -1,18 +1,18 @@
 # Dodatki do MOA
-##Inkrementowany klasyfikator
+## Inkrementowany klasyfikator
 
 Bayesowski:
 - Naive Bayes
 - Perceptron
 - k-NN
 
-###Parametry
+### Parametry
 
 - `budget` — % of objects in each chunk
 - `treshold` — `[0,1]`
 - `chunk_size`
 
-###Algorytm
+### Algorytm
 
     while data stream exists
       collect data in data chunk

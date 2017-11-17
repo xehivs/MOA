@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # Graphs
 require 'colorize'
-require 'csv'    
+require 'csv'
 require 'set'
 require 'json'
 require 'matrix'
@@ -107,7 +107,6 @@ for generator in generatorsSet
 
 	data.map! { |row| row.map! { |v| v / factor} }
 	#puts data
-
 
 	CSV.open("#{generator}_standardDeviation.csv", "w") do |csv|
 		data.each do |row|

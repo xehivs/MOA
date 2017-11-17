@@ -31,7 +31,7 @@ else
 	for budget in budgetSet
 		experimentNumber += 1
 
-		if(experimentNumber < startsWith || experimentNumber > endsWith) 
+		if(experimentNumber < startsWith || experimentNumber > endsWith)
 			next
 		end
 
@@ -49,13 +49,15 @@ else
 				next
 			end
 		end
-		
+
 		command = "java -cp moa.jar -javaagent:sizeofag.jar moa.DoTask \"EvaluatePrequentialActive -l #{classifier} -s #{generator} -i #{chunks} -b #{budget} -r #{threshold} -c #{chunkSize} -t #{timeCut}\" > results/#{outputFilename}"
 		puts "# Testing #{classifierName} on #{generatorName}".yellow
 		puts "# #{chunks} chunks #{chunkSize} instances each, on #{threshold} threshold and #{budget} budget".green
 
 		puts "#{format("%.3f", experimentNumber.to_f / experimentsCount.to_f)}"
+    '''
 		open("http://156.17.43.89:8888/moaStatus/#{format("%.3f", experimentNumber.to_f / experimentsCount.to_f)}").read
+    '''
 
 		system(command)
 	end
